@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Recepción Servicio Técnico</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="card">
+    <div class="topbar">
+  <a href="/registros.html" class="btn-link">Ver equipos ingresados</a>
+</div>
+
+    <h1>Ingreso de Equipo</h1>
+
+    <form action="/guardar" id="formEquipo"method="POST">
+      <div class="grid">
+        <div class="field">
+          <label>Nombre</label>
+          <input name="nombre" required>
+        </div>
+
+        <div class="field">
+          <label>Teléfono</label>
+          <input name="telefono" required>
+        </div>
+
+        <div class="field">
+          <label>Tipo de máquina</label>
+          <input name="tipo_maquina" required>
+        </div>
+
+        <div class="field">
+          <label>Marca</label>
+          <input name="marca" required>
+        </div>
+
+        <div class="field">
+          <label>Modelo</label>
+          <input name="modelo" required>
+        </div>
+
+        <div class="field">
+          <label>Estado / Incidente</label>
+          <input name="estado" required>
+        </div>
+
+        <div class="field full">
+          <label>Problema informado</label>
+          <textarea name="problema" required></textarea>
+        </div>
+
+        <div class="field">
+          <label>Accesorios</label>
+          <input name="accesorios">
+        </div>
+
+            <div class="field">
+      <label>Recibido por</label>
+      <select name="usuario_id" id="tecnicos" required>
+        <option value="">Cargando técnicos...</option>
+      </select>
+    </div>
+
+
+      <button type="submit">Registrar equipo</button>
+    </form>
+  </div>
+<script>
+fetch("/api/usuarios")
+  .then(r => r.json())
+  .then(data => {
+    const select = document.getElementById("tecnicos");
+    select.innerHTML = '<option value="">Seleccione técnico</option>';
+    data.forEach(t => {
+      select.innerHTML += `<option value="${t.id}">${t.nombre}</option>`;
+    });
+  });
+const form = document.getElementById("formEquipo");
+
+form.addEventListener("submit", async e => {
+  e.preventDefault(); // evita recarga
+
+  const datos = Object.fromEntries(new FormData(form));
+
+  try {
+    const r = await fetch("/guardar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
+    });
+
+    const mensaje = await r.text();
+    alert(mensaje);
+    form.reset();
+
+  } catch (err) {
+    alert("❌ Error al registrar");
+  }
+});
+</script>
+
+</body>
+</html>

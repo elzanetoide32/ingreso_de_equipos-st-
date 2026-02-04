@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Equipos Ingresados</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="card">
+  <h1>Equipos en Servicio</h1>
+  <table id="tabla">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Equipo</th>
+        <th>Estado</th>
+        <th>Recibido por</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+fetch("/api/recepciones")
+  .then(r => r.json())
+  .then(data => {
+    const tbody = document.querySelector("#tabla tbody");
+    data.forEach(r => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${r.id}</td>
+          <td>${r.cliente}</td>
+          <td>${r.tipo_maquina} ${r.marca} ${r.modelo}</td>
+          <td>${r.estado}</td>
+          <td>${r.tecnico || "Sin asignar"}</td>
+          <td>${new Date(r.fecha).toLocaleDateString()}</td>
+        </tr>
+      `;
+    });
+  });
+</script>
+
+</body>
+</html>
